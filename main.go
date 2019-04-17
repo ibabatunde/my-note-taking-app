@@ -36,7 +36,7 @@ type Note struct {
 func main() {
 	fmt.Println("Application starts")
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	client, _ = mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
+	client, _ = mongo.Connect(ctx, options.Client().ApplyURI("mongodb+srv://tundeokediran:0k3d1ran@todocluster-tsnax.mongodb.net/test?retryWrites=true"))
 	router := mux.NewRouter()
 	router.HandleFunc("/createuser", CreateUserEndpoint).Methods("POST")
 	router.HandleFunc("/allusers", GetAllUsers).Methods("GET")
