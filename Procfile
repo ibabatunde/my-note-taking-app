@@ -1,0 +1,1 @@
+web: note-taking-app
