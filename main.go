@@ -34,10 +34,10 @@ type Note struct {
 }
 
 func main() {
-	fmt.Println("Application starts")
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	client, _ = mongo.Connect(ctx, options.Client().ApplyURI("mongodb+srv://tundeokediran:0k3d1ran@todocluster-tsnax.mongodb.net/test?retryWrites=true"))
 	router := mux.NewRouter()
+	router.HandleFunc("/", Startsapp).Methods("GET")
 	router.HandleFunc("/createuser", CreateUserEndpoint).Methods("POST")
 	router.HandleFunc("/allusers", GetAllUsers).Methods("GET")
 	router.HandleFunc("/signin/{username}/{password}", SiginInEndpoint).Methods("GET")
@@ -45,6 +45,10 @@ func main() {
 	router.HandleFunc("/get_all_notes", GetAllNotes).Methods("GET")
 	router.HandleFunc("/getAllNotesForMember/{userid}", GetAllNotesForMemberEndpoint).Methods("GET")
 	log.Fatal(http.ListenAndServe(":12345", router))
+}
+
+func Startsapp(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Application starts")
 }
 
 func CreateUserEndpoint(w http.ResponseWriter, r *http.Request) {
