@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -44,7 +44,17 @@ func main() {
 	router.HandleFunc("/savenote", SaveNoteEndpoint).Methods("POST")
 	router.HandleFunc("/get_all_notes", GetAllNotes).Methods("GET")
 	router.HandleFunc("/getAllNotesForMember/{userid}", GetAllNotesForMemberEndpoint).Methods("GET")
-	log.Fatal(http.ListenAndServe(":12345", router))
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "12345"
+	}
+
+	fmt.Println(port)
+
+	err := http.ListenAndServe(":"+port, router)
+	if err != nil {
+		fmt.Print(err)
+	}
 }
 
 func Startsapp(w http.ResponseWriter, r *http.Request) {
