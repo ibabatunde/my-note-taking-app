@@ -19,11 +19,12 @@ import (
 var client *mongo.Client
 
 type User struct {
-	ID        primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
-	FirstName string             `json:"firstname,omitempty" bson:"firstname,omitempty"`
-	LastName  string             `json:"lastname,omitempty" bson:"lastname,omitempty"`
-	Username  string             `json:"username,omitempty" bson:"username,omitempty"`
-	Password  string             `json:"password,omitempty" bson:"password,omitempty"`
+	ID          primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
+	FirstName   string             `json:"firstname,omitempty" bson:"firstname,omitempty"`
+	LastName    string             `json:"lastname,omitempty" bson:"lastname,omitempty"`
+	Username    string             `json:"username,omitempty" bson:"username,omitempty"`
+	PhoneNumber string             `json:"phonenumber,omitempty" bson:"phonenumber,omitempty"`
+	Password    string             `json:"password,omitempty" bson:"password,omitempty"`
 }
 
 type Note struct {
@@ -40,7 +41,7 @@ func main() {
 	router.HandleFunc("/", Startsapp).Methods("GET")
 	router.HandleFunc("/createuser", CreateUserEndpoint).Methods("POST")
 	router.HandleFunc("/allusers", GetAllUsers).Methods("GET")
-	router.HandleFunc("/signin/{username}/{password}", SiginInEndpoint).Methods("GET")
+	router.HandleFunc("/signin/{phonenumber}/{password}", SiginInEndpoint).Methods("GET")
 	router.HandleFunc("/savenote", SaveNoteEndpoint).Methods("POST")
 	router.HandleFunc("/get_all_notes", GetAllNotes).Methods("GET")
 	router.HandleFunc("/getAllNotesForMember/{userid}", GetAllNotesForMemberEndpoint).Methods("GET")
@@ -100,15 +101,15 @@ func GetAllUsers(response http.ResponseWriter, request *http.Request) {
 func SiginInEndpoint(response http.ResponseWriter, request *http.Request) {
 	response.Header().Set("content-type", "application/json")
 	params := mux.Vars(request)
-	username := params["username"]
+	phonenumber := params["phonenumber"]
 	password := params["password"]
 	var user User
 	collection := client.Database("note-taking-app").Collection("users")
 	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
-	err := collection.FindOne(ctx, User{Username: username, Password: password}).Decode(&user)
+	err := collection.FindOne(ctx, User{PhoneNumber: phonenumber, Password: password}).Decode(&user)
 	if err != nil {
 		response.WriteHeader(http.StatusInternalServerError)
-		response.Write([]byte(`{"message": "` + err.Error() + `"}`))
+		response.Write([]byte(`{"Wrong username or password": "` + err.Error() + `"}`))
 		return
 	}
 	json.NewEncoder(response).Encode(user)
